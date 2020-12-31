@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "Avtex Coding Excercise",
   "scripts": {
+    "build": "tsc ",
     "test": "jest"
   },
   "author": "Joel Warrington <joelwarrington@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^26.0.15",
+    "@types/prompt-sync": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
     "eslint": "^7.12.1",

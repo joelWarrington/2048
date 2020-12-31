@@ -14,7 +14,7 @@ describe('BoardGame API', () => {
     gameboard.board.forEach((row) => {
       numOpenTiles += row.filter((cell) => cell === 0).length;
     });
-    expect(numOpenTiles).toBe(14);
+    expect(numOpenTiles).toEqual(14);
   });
 
   test('Tile Movement', () => {
@@ -57,14 +57,14 @@ describe('BoardGame API', () => {
   test('Available Move Condition', () => {
     const gameboard = new GameBoardAPI();
     gameboard.initializeBoard();
-    expect(gameboard.getBoardStatus()).toBe(GameStatus.InProgress);
+    expect(gameboard.getBoardStatus()).toEqual(GameStatus.InProgress);
     gameboard.board = [
       [4, 16, 4, 8],
       [16, 32, 16, 8],
       [16, 32, 16, 4],
       [2, 4, 4, 4],
     ];
-    expect(gameboard.getBoardStatus()).toBe(GameStatus.InProgress);
+    expect(gameboard.getBoardStatus()).toEqual(GameStatus.InProgress);
   });
 
   test('Win Condition', () => {
@@ -74,14 +74,14 @@ describe('BoardGame API', () => {
       [16, 32, 16, 4],
       [2, 0, 4, 4],
     ]);
-    expect(gameboard.getBoardStatus()).toBe(GameStatus.Won);
+    expect(gameboard.getBoardStatus()).toEqual(GameStatus.Won);
     gameboard.board = [
       [2, 16, 4, 8],
       [16, 32, 16, 8],
       [16, 32, 16, 4],
       [2, 0, 4, 2048],
     ];
-    expect(gameboard.getBoardStatus()).toBe(GameStatus.Won);
+    expect(gameboard.getBoardStatus()).toEqual(GameStatus.Won);
   });
 
   test('Loss Condition', () => {
@@ -91,13 +91,13 @@ describe('BoardGame API', () => {
       [4, 32, 16, 4],
       [2, 64, 4, 2],
     ]);
-    expect(gameboard.getBoardStatus()).toBe(GameStatus.Lost);
+    expect(gameboard.getBoardStatus()).toEqual(GameStatus.Lost);
     gameboard.board = [
       [4, 2, 4, 2],
       [8, 16, 8, 16],
       [32, 64, 32, 64],
       [128, 256, 128, 256],
     ];
-    expect(gameboard.getBoardStatus()).toBe(GameStatus.Lost);
+    expect(gameboard.getBoardStatus()).toEqual(GameStatus.Lost);
   });
 });
