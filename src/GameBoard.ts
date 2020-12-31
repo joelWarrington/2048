@@ -1,4 +1,3 @@
-import prompt from 'prompt-sync';
 import getRandomPercentage from './helpers/getRandomPercentage';
 import getRandomInt from './helpers/getRandomInt';
 
@@ -58,7 +57,7 @@ class GameBoard {
 
   moveTiles(direction: MoveDirection): void {
     if (direction == MoveDirection.Up || direction == MoveDirection.Down) {
-      // Combine elements in column
+      // Combine elements which are adjacent in the column direction and only have empty spaces between them.
       const [start, end] = [0, 4];
       for (let column = 0; column < 4; column++) {
         for (let rowA = start; rowA < end; rowA++) {
@@ -79,21 +78,18 @@ class GameBoard {
           }
         }
       }
-      //console.log('finished combining elements');
-      this.display();
-      // squash elements
+      // Squash elements up to direction
       let availableCellsRowNumber: number[] = [];
       if (direction == MoveDirection.Up) {
         for (let column = 0; column < 4; column++) {
           availableCellsRowNumber = [];
           for (let row = 0; row < 4; row++) {
             const cell = this.board[row][column];
-            //console.log(`cell ${column},${row} is equal to ${cell}`);
             if (cell === 0) availableCellsRowNumber.push(row);
             if (cell !== 0 && availableCellsRowNumber.length > 0) {
+              // There are cells which are empty, moving cell to first available spot.
               const availableCellRowNumber =
                 availableCellsRowNumber.shift() || 0;
-              //console.log(                `there are cells before this one which are 0, will move this one to ${column},${availableCellRowNumber}`              );
               this.board[availableCellRowNumber][column] = this.board[row][
                 column
               ];
@@ -107,12 +103,11 @@ class GameBoard {
           availableCellsRowNumber = [];
           for (let row = 3; row >= 0; row--) {
             const cell = this.board[row][column];
-            //console.log(`cell ${column},${row} is equal to ${cell}`);
             if (cell === 0) availableCellsRowNumber.push(row);
             if (cell !== 0 && availableCellsRowNumber.length > 0) {
               const availableCellRowNumber =
                 availableCellsRowNumber.shift() || 0;
-              //console.log(                `there are cells before this one which are 0, will move this one to ${column},${availableCellRowNumber}`              );
+              // There are cells which are empty, moving cell to first available spot.
               this.board[availableCellRowNumber][column] = this.board[row][
                 column
               ];
@@ -126,21 +121,17 @@ class GameBoard {
       direction == MoveDirection.Left ||
       direction == MoveDirection.Right
     ) {
-      // Combine elements in rows
+      // Combine elements which are adjacent in the horizontal row direction and only have empty spaces between them.
       const [start, end] = [0, 4];
       for (let row = 0; row < 4; row++) {
         for (let columnA = start; columnA < end; columnA++) {
           const cellA = this.board[row][columnA];
-          //console.log(`cell at ${columnA},${row} is equal to ${cellA}`);
           if (cellA !== 0) {
             for (let columnB = columnA + 1; columnB < end; columnB++) {
               const cellB = this.board[row][columnB];
-              //console.log(`checking next cell to check for equality.`);
-              //console.log(                `the next cell at ${columnB},${row} is equal to ${cellB}`              );
               if (cellB !== cellA && cellB !== 0) break;
               else {
                 if (cellB == cellA) {
-                  //console.log(                    `cell at ${columnA},${row} is equal to ${columnB},${row}, value is ${cellA}`                  );
                   this.board[row][columnB] = 0;
                   this.board[row][columnA] *= 2;
                   if (columnA + 1 != end) columnA++;
@@ -151,21 +142,18 @@ class GameBoard {
           }
         }
       }
-      //console.log('finished combining!');
-      this.display();
-      // Squash
+      // Squash elements up to direction
       let availableCellsColumnNumber: number[] = [];
       if (direction == MoveDirection.Left) {
         for (let row = 0; row < 4; row++) {
           availableCellsColumnNumber = [];
           for (let column = 0; column < 4; column++) {
             const cell = this.board[row][column];
-            //console.log(`cell ,${column},${row} is equal to ${cell}`);
             if (cell === 0) availableCellsColumnNumber.push(column);
             if (cell !== 0 && availableCellsColumnNumber.length > 0) {
+              // Combine elements which are adjacent in the horizontal row direction and only have empty spaces between them.
               const availableCellColumnNumber =
                 availableCellsColumnNumber.shift() || 0;
-              //console.log(                `there are cells before this one which are 0, will move this one to ${availableCellColumnNumber},${row}`              );
               this.board[row][availableCellColumnNumber] = this.board[row][
                 column
               ];
@@ -179,12 +167,11 @@ class GameBoard {
           availableCellsColumnNumber = [];
           for (let column = 3; column >= 0; column--) {
             const cell = this.board[row][column];
-            //console.log(`cell ,${column},${row} is equal to ${cell}`);
             if (cell === 0) availableCellsColumnNumber.push(column);
             if (cell !== 0 && availableCellsColumnNumber.length > 0) {
+              // Combine elements which are adjacent in the horizontal row direction and only have empty spaces between them.
               const availableCellColumnNumber =
                 availableCellsColumnNumber.shift() || 0;
-              //console.log(                `there are cells before this one which are 0, will move this one to ${availableCellColumnNumber},${row}`              );
               this.board[row][availableCellColumnNumber] = this.board[row][
                 column
               ];
