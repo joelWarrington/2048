@@ -64,7 +64,7 @@ class GameBoard {
         for (let rowA = start; rowA < end; rowA++) {
           const cellA = this.board[rowA][column];
           if (cellA !== 0) {
-            for (let rowB = rowA; rowB < end; rowB++) {
+            for (let rowB = rowA + 1; rowB < end; rowB++) {
               const cellB = this.board[rowB][column];
               if (cellB !== cellA && cellB !== 0) break;
               else {
@@ -72,29 +72,132 @@ class GameBoard {
                   this.board[rowB][column] = 0;
                   this.board[rowA][column] *= 2;
                   if (rowA + 1 != end) rowA++;
+                  break;
                 }
               }
             }
           }
         }
       }
-    } else {
+      console.log('finished combining elements');
+      this.display();
+      // squash elements
+      let availableCellsRowNumber: number[] = [];
+      if (direction == MoveDirection.Up) {
+        for (let column = 0; column < 4; column++) {
+          availableCellsRowNumber = [];
+          for (let row = 0; row < 4; row++) {
+            const cell = this.board[row][column];
+            console.log(`cell ${column},${row} is equal to ${cell}`);
+            if (cell === 0) availableCellsRowNumber.push(row);
+            if (cell !== 0 && availableCellsRowNumber.length > 0) {
+              const availableCellRowNumber = availableCellsRowNumber.shift();
+              console.log(
+                `there are cells before this one which are 0, will move this one to ${column},${availableCellRowNumber}`
+              );
+              this.board[availableCellRowNumber][column] = this.board[row][
+                column
+              ];
+              this.board[row][column] = 0;
+              availableCellsRowNumber.push(row);
+            }
+          }
+        }
+      } else if (direction == MoveDirection.Down) {
+        for (let column = 0; column < 4; column++) {
+          availableCellsRowNumber = [];
+          for (let row = 3; row >= 0; row--) {
+            const cell = this.board[row][column];
+            console.log(`cell ${column},${row} is equal to ${cell}`);
+            if (cell === 0) availableCellsRowNumber.push(row);
+            if (cell !== 0 && availableCellsRowNumber.length > 0) {
+              const availableCellRowNumber = availableCellsRowNumber.shift();
+              console.log(
+                `there are cells before this one which are 0, will move this one to ${column},${availableCellRowNumber}`
+              );
+              this.board[availableCellRowNumber][column] = this.board[row][
+                column
+              ];
+              this.board[row][column] = 0;
+              availableCellsRowNumber.push(row);
+            }
+          }
+        }
+      }
+    } else if (
+      direction == MoveDirection.Left ||
+      direction == MoveDirection.Right
+    ) {
       // Combine elements in rows
       const [start, end] = [0, 4];
       for (let row = 0; row < 4; row++) {
         for (let columnA = start; columnA < end; columnA++) {
-          const cellA = this.board[columnA][row];
+          const cellA = this.board[row][columnA];
+          console.log(`cell at ${columnA},${row} is equal to ${cellA}`);
           if (cellA !== 0) {
-            for (let columnB = columnA; columnB < end; columnB++) {
-              const cellB = this.board[columnB][row];
+            for (let columnB = columnA + 1; columnB < end; columnB++) {
+              const cellB = this.board[row][columnB];
+              console.log(`checking next cell to check for equality.`);
+              console.log(
+                `the next cell at ${columnB},${row} is equal to ${cellB}`
+              );
               if (cellB !== cellA && cellB !== 0) break;
               else {
                 if (cellB == cellA) {
-                  this.board[columnB][row] = 0;
-                  this.board[columnA][row] *= 2;
+                  console.log(
+                    `cell at ${columnA},${row} is equal to ${columnB},${row}, value is ${cellA}`
+                  );
+                  this.board[row][columnB] = 0;
+                  this.board[row][columnA] *= 2;
                   if (columnA + 1 != end) columnA++;
+                  break;
                 }
               }
+            }
+          }
+        }
+      }
+      console.log('finished combining!');
+      this.display();
+      // Squash
+      let availableCellsColumnNumber: number[] = [];
+      if (direction == MoveDirection.Left) {
+        for (let row = 0; row < 4; row++) {
+          availableCellsColumnNumber = [];
+          for (let column = 0; column < 4; column++) {
+            const cell = this.board[row][column];
+            console.log(`cell ,${column},${row} is equal to ${cell}`);
+            if (cell === 0) availableCellsColumnNumber.push(column);
+            if (cell !== 0 && availableCellsColumnNumber.length > 0) {
+              const availableCellColumnNumber = availableCellsColumnNumber.shift();
+              console.log(
+                `there are cells before this one which are 0, will move this one to ${availableCellColumnNumber},${row}`
+              );
+              this.board[row][availableCellColumnNumber] = this.board[row][
+                column
+              ];
+              this.board[row][column] = 0;
+              availableCellsColumnNumber.push(column);
+            }
+          }
+        }
+      } else if (direction == MoveDirection.Right) {
+        for (let row = 0; row < 4; row++) {
+          availableCellsColumnNumber = [];
+          for (let column = 3; column >= 0; column--) {
+            const cell = this.board[row][column];
+            console.log(`cell ,${column},${row} is equal to ${cell}`);
+            if (cell === 0) availableCellsColumnNumber.push(column);
+            if (cell !== 0 && availableCellsColumnNumber.length > 0) {
+              const availableCellColumnNumber = availableCellsColumnNumber.shift();
+              console.log(
+                `there are cells before this one which are 0, will move this one to ${availableCellColumnNumber},${row}`
+              );
+              this.board[row][availableCellColumnNumber] = this.board[row][
+                column
+              ];
+              this.board[row][column] = 0;
+              availableCellsColumnNumber.push(column);
             }
           }
         }
@@ -107,10 +210,14 @@ class GameBoard {
   }
 }
 
-const gameboardapi = new GameBoard();
+const gameboardapi = new GameBoard([
+  [2, 2, 2, 2],
+  [0, 2, 4, 4],
+  [16, 16, 16, 16],
+  [0, 0, 0, 0],
+]);
 
-gameboardapi.display();
-gameboardapi.initializeBoard();
+gameboardapi.moveTiles(MoveDirection.Right);
 gameboardapi.display();
 
 export default GameBoard;
